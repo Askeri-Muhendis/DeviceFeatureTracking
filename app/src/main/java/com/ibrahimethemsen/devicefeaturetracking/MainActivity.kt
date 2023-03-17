@@ -3,10 +3,8 @@ package com.ibrahimethemsen.devicefeaturetracking
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.ImageDecoder.ImageInfo
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DrawableRes
@@ -19,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
+import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: NetworkStatusViewModel by lazy {
@@ -34,22 +33,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityMainBinding
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         observe()
-        if (this.checkSelfPermission(this.toString()) == PackageManager.PERMISSION_GRANTED) {
-            // İzin verildi, işleme devam et
+        permission()
+    }
 
-            // diğer işlemler
-        } else {
-            // İzin verilmedi, kullanıcıdan izin iste
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE))
+
+    private fun permission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_PHONE_STATE),
+                1)
+        }
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    userInfo("İzin Verildi")
+                } else {
+                    userInfo("İzin Yok")
+                }
+            }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun observe() {
         viewModel.state.observe(this) { state ->
             when (state) {
@@ -76,7 +91,6 @@ class MainActivity : AppCompatActivity() {
                             getString(R.string.wifi_status_not_connected)
                     }
                 }
-
                 MyState.Cellular -> {
                     binding.apply {
                         this@MainActivity.changeViewState(
@@ -88,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                             wifiStatusTv,
                             R.drawable.wifi_off
                         )
+
                     }
                 }
                 MyState.Wifi -> {
@@ -101,6 +116,35 @@ class MainActivity : AppCompatActivity() {
                             cellularStatusTv,
                             R.drawable.cellular_no_connected
                         )
+                        networkSpeedStatusTv.text = "Kapalı"
+                        networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.cellular_no_connected))
+                    }
+                }
+                is MyState.NetworkSpeed -> {
+                    when(state.data){
+                        "2G","?"->{
+                            binding.apply {
+                                networkSpeedStatusTv.text = "bilinmiyor"
+                            }
+                        }
+                        "3G"->{
+                            binding.apply {
+                                networkSpeedStatusTv.text = "3G"
+                                networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_three_g))
+                            }
+                        }
+                        "4G"->{
+                            binding.apply {
+                                networkSpeedStatusTv.text = "4G"
+                                networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_four_g))
+                            }
+                        }
+                        "5G"->{
+                            binding.apply {
+                                networkSpeedStatusTv.text = "5G"
+                                networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_five_g))
+                            }
+                        }
                     }
                 }
             }
