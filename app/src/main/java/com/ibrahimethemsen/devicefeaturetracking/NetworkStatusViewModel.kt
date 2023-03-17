@@ -7,7 +7,6 @@ import com.ibrahimethemsen.devicefeaturetracking.network.map
 import kotlinx.coroutines.Dispatchers
 
 sealed class MyState{
-    object Fetched : MyState()
     object Wifi : MyState()
     object Cellular : MyState()
     object Error : MyState()
@@ -18,7 +17,6 @@ class NetworkStatusViewModel(
 ) : ViewModel(){
     val state = networkStatusTracker.networkStatus.map(
         onUnavailable = {MyState.Error},
-        onAvailable = {MyState.Fetched},
         onWifi = {MyState.Wifi},
         onCellular = {MyState.Cellular}
     ).asLiveData(Dispatchers.IO)
