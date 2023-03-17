@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DeviceFeatureTracking</string>
+    <string name="wifi_status_connected">Bağlı</string>
+    <string name="wifi_status_not_connected">Bağlı Değil</string>
 </resources>

@@ -1,18 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/wifi_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/wifi_status_connected"
+        android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/wifi_connected" />
 
+    <TextView
+        android:id="@+id/wifi_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/wifi_iv"
+        app:layout_constraintStart_toStartOf="@+id/wifi_iv"
+        app:layout_constraintTop_toBottomOf="@id/wifi_iv"
+        tools:text="@string/wifi_status_connected" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/cellular_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/wifi_status_connected"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wifi_iv"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/cellular_connected" />
+
+    <TextView
+        android:id="@+id/cellular_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/cellular_iv"
+        app:layout_constraintStart_toStartOf="@+id/cellular_iv"
+        app:layout_constraintTop_toBottomOf="@id/wifi_iv"
+        tools:text="@string/wifi_status_connected" />
 </androidx.constraintlayout.widget.ConstraintLayout>
