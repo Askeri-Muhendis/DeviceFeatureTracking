@@ -15,7 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.ibrahimethemsen.devicefeaturetracking.battery.BatteryStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
+import com.ibrahimethemsen.devicefeaturetracking.earphones.HeadsetTracker
 import com.ibrahimethemsen.devicefeaturetracking.model.CardState
+import com.ibrahimethemsen.devicefeaturetracking.model.HeadsetState
 import com.ibrahimethemsen.devicefeaturetracking.model.MyState
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
@@ -31,8 +33,8 @@ class MainActivity : AppCompatActivity() {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     val networkStatusTracker = NetworkStatusTracker(this@MainActivity)
                     val simStatusTracker = SimCardStatusTracker(this@MainActivity)
-
-                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker) as T
+                    val tracker = HeadsetTracker(this@MainActivity)
+                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker,tracker) as T
                 }
             },
         )[NetworkStatusViewModel::class.java]
@@ -48,6 +50,8 @@ class MainActivity : AppCompatActivity() {
         observe()
         permission()
         setBatteryState()
+
+
     }
 
     private fun setBatteryState(){
@@ -201,6 +205,19 @@ class MainActivity : AppCompatActivity() {
                         R.drawable.ic_no_sim,
                         R.string.key_sim_no_inserted
                     )
+                }
+            }
+        }
+        viewModel.headsetStatus.observe(this){
+            when(it){
+                HeadsetState.Earphone -> {
+                    binding.statusHeadset.propertiesStatusChangeView(R.drawable.ic_headphones,R.string.key_headset)
+                }
+                HeadsetState.MicrophoneEarphone -> {
+                    binding.statusHeadset.propertiesStatusChangeView(R.drawable.ic_headset_mic,R.string.key_headset_mic)
+                }
+                HeadsetState.NotEarphone -> {
+                    binding.statusHeadset.propertiesStatusChangeView(R.drawable.ic_headset_off,R.string.key_headset_not)
                 }
             }
         }

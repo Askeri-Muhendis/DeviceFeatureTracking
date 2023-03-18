@@ -20,5 +20,8 @@
     <string name="key_charging">Şarj Oluyor</string>
     <string name="key_not_charging">Şarj Olmuyor</string>
     <string name="wifi_title">Wifi Durumu</string>
-
+    <!--Headset-->
+    <string name="key_headset">Kulaklık Takılı</string>
+    <string name="key_headset_mic">Kulaklık ve Mikrofon</string>
+    <string name="key_headset_not">Kulaklık Yok</string>
 </resources>
