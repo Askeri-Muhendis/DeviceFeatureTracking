@@ -11,6 +11,7 @@ import android.os.Build
 import android.telephony.TelephonyManager
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import com.ibrahimethemsen.devicefeaturetracking.R
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -78,7 +79,7 @@ class NetworkStatusTracker(context: Context) {
                 TelephonyManager.NETWORK_TYPE_CDMA,
                 TelephonyManager.NETWORK_TYPE_1xRTT,
                 TelephonyManager.NETWORK_TYPE_IDEN,
-                TelephonyManager.NETWORK_TYPE_GSM -> return "2G"
+                TelephonyManager.NETWORK_TYPE_GSM -> return context.getString(R.string.key_two_g)
                 TelephonyManager.NETWORK_TYPE_UMTS,
                 TelephonyManager.NETWORK_TYPE_EVDO_0,
                 TelephonyManager.NETWORK_TYPE_EVDO_A,
@@ -88,11 +89,11 @@ class NetworkStatusTracker(context: Context) {
                 TelephonyManager.NETWORK_TYPE_EVDO_B,
                 TelephonyManager.NETWORK_TYPE_EHRPD,
                 TelephonyManager.NETWORK_TYPE_HSPAP,
-                TelephonyManager.NETWORK_TYPE_TD_SCDMA -> return "3G"
+                TelephonyManager.NETWORK_TYPE_TD_SCDMA -> return context.getString(R.string.key_three_g)
                 TelephonyManager.NETWORK_TYPE_LTE,
-                TelephonyManager.NETWORK_TYPE_IWLAN, 19 -> return "4G"
-                TelephonyManager.NETWORK_TYPE_NR -> return "5G"
-                else -> return "?"
+                TelephonyManager.NETWORK_TYPE_IWLAN-> return context.getString(R.string.key_four_g)
+                TelephonyManager.NETWORK_TYPE_NR -> return context.getString(R.string.key_five_g)
+                else -> return context.getString(R.string.key_unknown)
             }
 
         }else{

@@ -1,24 +1,22 @@
 package com.ibrahimethemsen.devicefeaturetracking
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewbinding.ViewBinding
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
+import com.ibrahimethemsen.devicefeaturetracking.model.PropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
+import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesStatusChanged
+import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
-
+//TODO WIFI-3G-SIM CARD-SARJ SOKETI-KULAKLIK-BLUETOOTH-NFC-TITRESIM-FLASH-HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
 class MainActivity : AppCompatActivity() {
     private val viewModel: NetworkStatusViewModel by lazy {
         ViewModelProvider(
@@ -33,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityMainBinding
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,15 +42,23 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun permission(){
+    private fun permission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
                 arrayOf(Manifest.permission.READ_PHONE_STATE),
-                1)
+                1
+            )
         }
     }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             1 -> {
@@ -70,80 +77,122 @@ class MainActivity : AppCompatActivity() {
             when (state) {
                 MyState.Error -> {
                     binding.apply {
-                        wifiIv.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                this@MainActivity,
-                                R.drawable.wifi_off
+                        this@MainActivity.devicePropertiesUiState(
+                            PropertiesUiState(
+                                cellularIv,
+                                cellularStatusTv,
+                                R.drawable.cellular_no_connected,
+                                R.string.key_not_connected
+                            ),
+                            PropertiesUiState(
+                                wifiIv,
+                                wifiStatusTv,
+                                R.drawable.wifi_off,
+                                R.string.key_not_connected
+                            ),
+                            PropertiesUiState(
+                                networkSpeedIv,
+                                networkSpeedStatusTv,
+                                R.drawable.ic_speed_unknown,
+                                R.string.key_not_connected
                             )
                         )
-                        wifiStatusTv.text = getString(R.string.wifi_status_not_connected)
-                        wifiIv.contentDescription = getString(R.string.wifi_status_not_connected)
-                    }
-                    binding.apply {
-                        cellularIv.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                this@MainActivity,
-                                R.drawable.cellular_no_connected
-                            )
-                        )
-                        cellularStatusTv.text = getString(R.string.wifi_status_not_connected)
-                        cellularIv.contentDescription =
-                            getString(R.string.wifi_status_not_connected)
                     }
                 }
                 MyState.Cellular -> {
                     binding.apply {
-                        this@MainActivity.changeViewState(
-                            this,
-                            cellularIv,
-                            cellularStatusTv,
-                            R.drawable.cellular_connected,
-                            wifiIv,
-                            wifiStatusTv,
-                            R.drawable.wifi_off
+                        this@MainActivity.devicePropertiesUiState(
+                            PropertiesUiState(
+                                cellularIv,
+                                cellularStatusTv,
+                                R.drawable.cellular_connected,
+                                R.string.key_connected
+                            ),
+                            PropertiesUiState(
+                                wifiIv,
+                                wifiStatusTv,
+                                R.drawable.wifi_off,
+                                R.string.key_not_connected
+                            )
                         )
-
                     }
                 }
                 MyState.Wifi -> {
                     binding.apply {
-                        this@MainActivity.changeViewState(
-                            this,
-                            wifiIv,
-                            wifiStatusTv,
-                            R.drawable.wifi_connected,
-                            cellularIv,
-                            cellularStatusTv,
-                            R.drawable.cellular_no_connected
+                        this@MainActivity.devicePropertiesUiState(
+                            PropertiesUiState(
+                                wifiIv,
+                                wifiStatusTv,
+                                R.drawable.wifi_connected,
+                                R.string.key_connected
+                            ),
+                            PropertiesUiState(
+                                cellularIv,
+                                cellularStatusTv,
+                                R.drawable.cellular_no_connected,
+                                R.string.key_not_connected
+                            ),
+                            PropertiesUiState(
+                                networkSpeedIv,
+                                networkSpeedStatusTv,
+                                R.drawable.ic_speed_unknown,
+                                R.string.key_unknown
+                            )
                         )
-                        networkSpeedStatusTv.text = "Kapalı"
-                        networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.cellular_no_connected))
                     }
                 }
                 is MyState.NetworkSpeed -> {
-                    when(state.data){
-                        "2G","?"->{
+                    when (state.data) {
+                        "2G", "?" -> {
                             binding.apply {
-                                networkSpeedStatusTv.text = "bilinmiyor"
+                                this@MainActivity.devicePropertiesStatusChanged(
+                                    PropertiesUiState(
+                                        networkSpeedIv,
+                                        networkSpeedStatusTv,
+                                        R.drawable.ic_speed_unknown,
+                                        R.string.key_unknown
+                                    )
+                                )
                             }
                         }
-                        "3G"->{
+                        "3G" -> {
                             binding.apply {
-                                networkSpeedStatusTv.text = "3G"
-                                networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_three_g))
+                                this@MainActivity.devicePropertiesStatusChanged(
+                                    PropertiesUiState(
+                                        networkSpeedIv,
+                                        networkSpeedStatusTv,
+                                        R.drawable.ic_three_g,
+                                        R.string.key_unknown
+                                    )
+                                )
                             }
                         }
-                        "4G"->{
+                        "4G" -> {
                             binding.apply {
-                                networkSpeedStatusTv.text = "4G"
-                                networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_four_g))
+                                this@MainActivity.devicePropertiesStatusChanged(
+                                    PropertiesUiState(
+                                        networkSpeedIv,
+                                        networkSpeedStatusTv,
+                                        R.drawable.ic_four_g,
+                                        R.string.key_four_g
+                                    )
+                                )
                             }
                         }
-                        "5G"->{
+                        "5G" -> {
                             binding.apply {
-                                networkSpeedStatusTv.text = "5G"
-                                networkSpeedIv.setImageDrawable(ContextCompat.getDrawable(this@MainActivity,R.drawable.ic_five_g))
+                                this@MainActivity.devicePropertiesStatusChanged(
+                                    PropertiesUiState(
+                                        networkSpeedIv,
+                                        networkSpeedStatusTv,
+                                        R.drawable.ic_five_g,
+                                        R.string.key_five_g
+                                    )
+                                )
                             }
+                        }
+                        else -> {
+                            userInfo("İzin verilmemiş")
                         }
                     }
                 }
@@ -153,32 +202,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 
-fun Context.changeViewState(
-    binding: ViewBinding,
-    connectedIv: ImageView,
-    connectedTv: TextView,
-    @DrawableRes connectedDrawable : Int,
-    notConnectedIv: ImageView,
-    notConnectedTv: TextView,
-    @DrawableRes notConnectedDrawable : Int
-) {
-    binding.apply {
-        connectedIv.setImageDrawable(
-            ContextCompat.getDrawable(
-                this@changeViewState,
-                connectedDrawable
-            )
-        )
-        connectedTv.text = getString(R.string.wifi_status_connected)
-        connectedIv.contentDescription = getString(R.string.wifi_status_connected)
-        //notConnected
-        notConnectedIv.setImageDrawable(
-            ContextCompat.getDrawable(
-                this@changeViewState,
-                notConnectedDrawable
-            )
-        )
-        notConnectedTv.text = getString(R.string.wifi_status_not_connected)
-        notConnectedIv.contentDescription = getString(R.string.wifi_status_not_connected)
-    }
-}
+
+
+
+

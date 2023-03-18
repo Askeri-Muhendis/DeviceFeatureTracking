@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">DeviceFeatureTracking</string>
-    <string name="wifi_status_connected">Bağlı</string>
-    <string name="wifi_status_not_connected">Bağlı Değil</string>
+    <!--Common-->
+    <string name="key_unknown">Bilinmiyor</string>
+    <!--Network Status-->
+    <string name="key_connected">Bağlı</string>
+    <string name="key_not_connected">Bağlı Değil</string>
+
+    <!--Network Speed-->
+    <string name="key_two_g">2G</string>
+    <string name="key_three_g">3G</string>
+    <string name="key_four_g">4G</string>
+    <string name="key_five_g">5G</string>
+
 </resources>
