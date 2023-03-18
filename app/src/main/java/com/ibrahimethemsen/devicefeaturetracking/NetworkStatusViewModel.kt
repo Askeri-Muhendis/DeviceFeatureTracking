@@ -4,6 +4,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import com.ibrahimethemsen.devicefeaturetracking.battery.BatteryStatusTracker
+import com.ibrahimethemsen.devicefeaturetracking.bluetooth.BluetoothState
+import com.ibrahimethemsen.devicefeaturetracking.bluetooth.BluetoothTracker
 import com.ibrahimethemsen.devicefeaturetracking.earphones.HeadsetTracker
 import com.ibrahimethemsen.devicefeaturetracking.model.CardState
 import com.ibrahimethemsen.devicefeaturetracking.model.HeadsetState
@@ -19,7 +21,8 @@ import kotlinx.coroutines.launch
 class NetworkStatusViewModel(
     networkStatusTracker: NetworkStatusTracker,
     simStatusTracker : SimCardStatusTracker,
-    private val headsetTracker: HeadsetTracker
+    private val headsetTracker: HeadsetTracker,
+    private val bluetoothTracker: BluetoothTracker
 ) : ViewModel(){
     @RequiresApi(Build.VERSION_CODES.N)
     val state = networkStatusTracker.networkStatus.map(
@@ -40,6 +43,9 @@ class NetworkStatusViewModel(
     private val _headsetStatus = MutableLiveData<HeadsetState>()
     val headsetStatus : LiveData<HeadsetState> = _headsetStatus
 
+    private val _bluetoothStatus = MutableLiveData<BluetoothState>()
+    val bluetoothStatus : LiveData<BluetoothState> = _bluetoothStatus
+
     fun batteryStatusFlow(batteryStatusTracker: BatteryStatusTracker){
         viewModelScope.launch {
             batteryStatusTracker.isCharging.collect{
@@ -49,11 +55,19 @@ class NetworkStatusViewModel(
     }
     init {
         headsetStatusFlow()
+        bluetoothStatusFlow()
     }
     private fun headsetStatusFlow(){
         viewModelScope.launch {
             headsetTracker.observeHeadsetConnection().collect{
                 _headsetStatus.postValue(it)
+            }
+        }
+    }
+    private fun bluetoothStatusFlow(){
+        viewModelScope.launch {
+            bluetoothTracker.observeBluetoothStateChanges().collect{
+                _bluetoothStatus.postValue(it)
             }
         }
     }

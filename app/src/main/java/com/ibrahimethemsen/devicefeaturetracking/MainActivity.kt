@@ -12,8 +12,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.ibrahimethemsen.devicefeaturetracking.battery.BatteryStatusTracker
+import com.ibrahimethemsen.devicefeaturetracking.bluetooth.BluetoothState
+import com.ibrahimethemsen.devicefeaturetracking.bluetooth.BluetoothTracker
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
 import com.ibrahimethemsen.devicefeaturetracking.earphones.HeadsetTracker
 import com.ibrahimethemsen.devicefeaturetracking.model.CardState
@@ -22,7 +23,6 @@ import com.ibrahimethemsen.devicefeaturetracking.model.MyState
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
-import kotlinx.coroutines.launch
 
 //TODO WIFI-3G-SIM CARD-SARJ SOKETI-KULAKLIK-BLUETOOTH-NFC-TITRESIM-FLASH-HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
 class MainActivity : AppCompatActivity() {
@@ -33,8 +33,9 @@ class MainActivity : AppCompatActivity() {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     val networkStatusTracker = NetworkStatusTracker(this@MainActivity)
                     val simStatusTracker = SimCardStatusTracker(this@MainActivity)
-                    val tracker = HeadsetTracker(this@MainActivity)
-                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker,tracker) as T
+                    val headsetTracker = HeadsetTracker(this@MainActivity)
+                    val bluetoothTracker = BluetoothTracker(this@MainActivity)
+                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker,headsetTracker,bluetoothTracker) as T
                 }
             },
         )[NetworkStatusViewModel::class.java]
@@ -50,8 +51,6 @@ class MainActivity : AppCompatActivity() {
         observe()
         permission()
         setBatteryState()
-
-
     }
 
     private fun setBatteryState(){
@@ -59,28 +58,7 @@ class MainActivity : AppCompatActivity() {
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         registerReceiver(batteryStatusTracker, filter)
         viewModel.batteryStatusFlow(batteryStatusTracker)
-        setBatteryTrackerUiState()
     }
-
-    private fun setBatteryTrackerUiState() {
-        lifecycleScope.launch {
-            viewModel.batteryStatus.observe(this@MainActivity) { isCharging ->
-                if (isCharging) {
-                    binding.statusBattery.propertiesStatusChangeView(
-                        R.drawable.ic_battery,
-                        R.string.key_charging
-                    )
-
-                } else {
-                    binding.statusBattery.propertiesStatusChangeView(
-                        R.drawable.ic_not_battery,
-                        R.string.key_not_charging
-                    )
-                }
-            }
-        }
-    }
-
     private fun permission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
             != PackageManager.PERMISSION_GRANTED
@@ -91,6 +69,16 @@ class MainActivity : AppCompatActivity() {
                 1
             )
         }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.READ_PHONE_STATE),
+                2
+            )
+        }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -102,6 +90,13 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             1 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    userInfo("İzin Verildi")
+                } else {
+                    userInfo("İzin Yok")
+                }
+            }
+            2 -> {
+                if (grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     userInfo("İzin Verildi")
                 } else {
                     userInfo("İzin Yok")
@@ -219,6 +214,27 @@ class MainActivity : AppCompatActivity() {
                 HeadsetState.NotEarphone -> {
                     binding.statusHeadset.propertiesStatusChangeView(R.drawable.ic_headset_off,R.string.key_headset_not)
                 }
+            }
+        }
+        viewModel.batteryStatus.observe(this) { isCharging ->
+            if (isCharging) {
+                binding.statusBattery.propertiesStatusChangeView(
+                    R.drawable.ic_battery,
+                    R.string.key_charging
+                )
+
+            } else {
+                binding.statusBattery.propertiesStatusChangeView(
+                    R.drawable.ic_not_battery,
+                    R.string.key_not_charging
+                )
+            }
+        }
+        viewModel.bluetoothStatus.observe(this){
+            when(it){
+                BluetoothState.Connected -> binding.statusBluetooth.propertiesStatusChangeView(R.drawable.ic_bluetooth_connected,R.string.key_bluetooth_connected)
+                BluetoothState.Disable -> binding.statusBluetooth.propertiesStatusChangeView(R.drawable.ic_bluetooth_disabled,R.string.key_bluetooth_disable)
+                BluetoothState.Enabled ->binding.statusBluetooth.propertiesStatusChangeView(R.drawable.ic_bluetooth,R.string.key_bluetooth_enable)
             }
         }
     }

@@ -12,9 +12,9 @@ class SimCardStatusTracker(context : Context) {
     private val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
     val simCardStatus = callbackFlow{
         if (telephonyManager.simState == TelephonyManager.SIM_STATE_ABSENT){
-            trySend(SimStatus.noCardInserted)
+            trySend(SimStatus.NoCardInserted)
         }else{
-            trySend(SimStatus.cardInserted)
+            trySend(SimStatus.CardInserted)
         }
 
         awaitClose()
@@ -26,7 +26,7 @@ inline fun <Result> Flow<SimStatus>.simMap(
     crossinline onNotInserted: suspend () -> Result
 ): Flow<Result> = map { status ->
     when (status) {
-        SimStatus.cardInserted -> onInserted()
-        SimStatus.noCardInserted -> onNotInserted()
+        SimStatus.CardInserted -> onInserted()
+        SimStatus.NoCardInserted -> onNotInserted()
     }
 }

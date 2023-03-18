@@ -78,4 +78,16 @@
         app:layout_constraintStart_toStartOf="@+id/status_sim_card"
         app:layout_constraintTop_toBottomOf="@+id/status_cellular_speed"
         app:titleString="Kulaklık" />
+
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:defaultSrc="@drawable/ic_bluetooth_disabled"
+        app:defaultString="Bağlı Değil"
+        app:layout_constraintEnd_toEndOf="@+id/status_battery"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/status_battery"
+        app:layout_constraintTop_toBottomOf="@+id/status_battery"
+        app:titleString="Bluetooth" />
 </androidx.constraintlayout.widget.ConstraintLayout>
