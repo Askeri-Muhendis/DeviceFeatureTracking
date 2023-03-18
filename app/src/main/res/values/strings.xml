@@ -19,5 +19,6 @@
     <!--Battery-->
     <string name="key_charging">Şarj Oluyor</string>
     <string name="key_not_charging">Şarj Olmuyor</string>
+    <string name="wifi_title">Wifi Durumu</string>
 
 </resources>

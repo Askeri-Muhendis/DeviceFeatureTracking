@@ -17,11 +17,8 @@ import com.ibrahimethemsen.devicefeaturetracking.battery.BatteryStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
 import com.ibrahimethemsen.devicefeaturetracking.model.CardState
 import com.ibrahimethemsen.devicefeaturetracking.model.MyState
-import com.ibrahimethemsen.devicefeaturetracking.model.PropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
-import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesStatusChanged
-import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 import kotlinx.coroutines.launch
 
@@ -50,36 +47,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         observe()
         permission()
+        setBatteryState()
+    }
 
+    private fun setBatteryState(){
         val batteryStatusTracker = BatteryStatusTracker()
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-
         registerReceiver(batteryStatusTracker, filter)
         viewModel.batteryStatusFlow(batteryStatusTracker)
         setBatteryTrackerUiState()
     }
 
-    private fun setBatteryTrackerUiState(){
+    private fun setBatteryTrackerUiState() {
         lifecycleScope.launch {
-            viewModel.batteryStatus.observe(this@MainActivity){ isCharging ->
-                // Şarj durumunu kullanarak yapılacak işlemler
-                if (isCharging){
-                    devicePropertiesStatusChanged(
-                        PropertiesUiState(
-                            binding.batteryIv,
-                            binding.batteryStatusTv,
-                            R.drawable.ic_battery,
-                            R.string.key_charging
-                        )
+            viewModel.batteryStatus.observe(this@MainActivity) { isCharging ->
+                if (isCharging) {
+                    binding.statusBattery.propertiesStatusChangeView(
+                        R.drawable.ic_battery,
+                        R.string.key_charging
                     )
-                }else{
-                    devicePropertiesStatusChanged(
-                        PropertiesUiState(
-                            binding.batteryIv,
-                            binding.batteryStatusTv,
-                            R.drawable.ic_not_battery,
-                            R.string.key_not_charging
-                        )
+
+                } else {
+                    binding.statusBattery.propertiesStatusChangeView(
+                        R.drawable.ic_not_battery,
+                        R.string.key_not_charging
                     )
                 }
             }
@@ -121,119 +112,74 @@ class MainActivity : AppCompatActivity() {
             when (state) {
                 MyState.Error -> {
                     binding.apply {
-                        this@MainActivity.devicePropertiesUiState(
-                            PropertiesUiState(
-                                cellularIv,
-                                cellularStatusTv,
-                                R.drawable.cellular_no_connected,
-                                R.string.key_not_connected
-                            ),
-                            PropertiesUiState(
-                                wifiIv,
-                                wifiStatusTv,
-                                R.drawable.wifi_off,
-                                R.string.key_not_connected
-                            ),
-                            PropertiesUiState(
-                                networkSpeedIv,
-                                networkSpeedStatusTv,
-                                R.drawable.ic_speed_unknown,
-                                R.string.key_not_connected
-                            )
+                        statusCellularSpeed.propertiesStatusChangeView(
+                            R.drawable.ic_speed_unknown,
+                            R.string.key_not_connected
+                        )
+                        statusCellular.propertiesStatusChangeView(
+                            R.drawable.cellular_no_connected,
+                            R.string.key_not_connected
+                        )
+                        statusWifi.propertiesStatusChangeView(
+                            R.drawable.wifi_off,
+                            R.string.key_not_connected
                         )
                     }
                 }
                 MyState.Cellular -> {
                     binding.apply {
-                        this@MainActivity.devicePropertiesUiState(
-                            PropertiesUiState(
-                                cellularIv,
-                                cellularStatusTv,
-                                R.drawable.cellular_connected,
-                                R.string.key_connected
-                            ),
-                            PropertiesUiState(
-                                wifiIv,
-                                wifiStatusTv,
-                                R.drawable.wifi_off,
-                                R.string.key_not_connected
-                            )
+                        statusCellular.propertiesStatusChangeView(
+                            R.drawable.cellular_connected,
+                            R.string.key_connected
+                        )
+                        statusWifi.propertiesStatusChangeView(
+                            R.drawable.wifi_off,
+                            R.string.key_not_connected
                         )
                     }
                 }
                 MyState.Wifi -> {
                     binding.apply {
-                        this@MainActivity.devicePropertiesUiState(
-                            PropertiesUiState(
-                                wifiIv,
-                                wifiStatusTv,
-                                R.drawable.wifi_connected,
-                                R.string.key_connected
-                            ),
-                            PropertiesUiState(
-                                cellularIv,
-                                cellularStatusTv,
-                                R.drawable.cellular_no_connected,
-                                R.string.key_not_connected
-                            ),
-                            PropertiesUiState(
-                                networkSpeedIv,
-                                networkSpeedStatusTv,
-                                R.drawable.ic_speed_unknown,
-                                R.string.key_unknown
-                            )
+                        statusCellularSpeed.propertiesStatusChangeView(
+                            R.drawable.ic_speed_unknown,
+                            R.string.key_unknown
+                        )
+                        statusCellular.propertiesStatusChangeView(
+                            R.drawable.cellular_no_connected,
+                            R.string.key_not_connected
+                        )
+                        statusWifi.propertiesStatusChangeView(
+                            R.drawable.wifi_connected,
+                            R.string.key_connected
                         )
                     }
                 }
                 is MyState.NetworkSpeed -> {
                     when (state.data) {
                         "2G", "?" -> {
-                            binding.apply {
-                                this@MainActivity.devicePropertiesStatusChanged(
-                                    PropertiesUiState(
-                                        networkSpeedIv,
-                                        networkSpeedStatusTv,
-                                        R.drawable.ic_speed_unknown,
-                                        R.string.key_unknown
-                                    )
-                                )
-                            }
+                            binding.statusCellularSpeed.propertiesStatusChangeView(
+                                R.drawable.ic_speed_unknown,
+                                R.string.key_unknown
+                            )
+
                         }
                         "3G" -> {
-                            binding.apply {
-                                this@MainActivity.devicePropertiesStatusChanged(
-                                    PropertiesUiState(
-                                        networkSpeedIv,
-                                        networkSpeedStatusTv,
-                                        R.drawable.ic_three_g,
-                                        R.string.key_unknown
-                                    )
-                                )
-                            }
+                            binding.statusCellularSpeed.propertiesStatusChangeView(
+                                R.drawable.ic_three_g,
+                                R.string.key_unknown
+                            )
                         }
                         "4G" -> {
-                            binding.apply {
-                                this@MainActivity.devicePropertiesStatusChanged(
-                                    PropertiesUiState(
-                                        networkSpeedIv,
-                                        networkSpeedStatusTv,
-                                        R.drawable.ic_four_g,
-                                        R.string.key_four_g
-                                    )
-                                )
-                            }
+                            binding.statusCellularSpeed.propertiesStatusChangeView(
+                                R.drawable.ic_four_g,
+                                R.string.key_four_g
+                            )
                         }
                         "5G" -> {
-                            binding.apply {
-                                this@MainActivity.devicePropertiesStatusChanged(
-                                    PropertiesUiState(
-                                        networkSpeedIv,
-                                        networkSpeedStatusTv,
-                                        R.drawable.ic_five_g,
-                                        R.string.key_five_g
-                                    )
-                                )
-                            }
+                            binding.statusCellularSpeed.propertiesStatusChangeView(
+                                R.drawable.ic_five_g,
+                                R.string.key_five_g
+                            )
                         }
                         else -> {
                             userInfo("İzin verilmemiş")
@@ -242,39 +188,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.simState.observe(this){
-            when(it){
+        viewModel.simState.observe(this) {
+            when (it) {
                 CardState.Inserted -> {
-                    binding.apply {
-                        this@MainActivity.devicePropertiesStatusChanged(
-                            PropertiesUiState(
-                                simCardIv,
-                                simCardStatusTv,
-                                R.drawable.ic_sim,
-                                R.string.key_sim_inserted
-                            )
-                        )
-                    }
+                    binding.statusSimCard.propertiesStatusChangeView(
+                        R.drawable.ic_sim,
+                        R.string.key_sim_inserted
+                    )
                 }
                 CardState.NotInserted -> {
-                    binding.apply {
-                        this@MainActivity.devicePropertiesStatusChanged(
-                            PropertiesUiState(
-                                simCardIv,
-                                simCardStatusTv,
-                                R.drawable.ic_no_sim,
-                                R.string.key_sim_no_inserted
-                            )
-                        )
-                    }
+                    binding.statusSimCard.propertiesStatusChangeView(
+                        R.drawable.ic_no_sim,
+                        R.string.key_sim_no_inserted
+                    )
                 }
             }
         }
     }
 }
-
-
-
-
-
-

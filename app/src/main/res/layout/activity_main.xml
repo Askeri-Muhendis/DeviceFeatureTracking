@@ -6,107 +6,63 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/wifi_iv"
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_wifi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/key_not_connected"
-        app:layout_constraintEnd_toStartOf="@+id/cellular_iv"
+        app:defaultSrc="@drawable/wifi_off"
+        app:defaultString="Bilinmiyor"
+        app:layout_constraintEnd_toStartOf="@+id/status_cellular"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/wifi_off" />
+        app:titleString="Wifi Durumu" />
 
-    <TextView
-        android:id="@+id/wifi_status_tv"
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_cellular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/wifi_iv"
-        app:layout_constraintStart_toStartOf="@+id/wifi_iv"
-        app:layout_constraintTop_toBottomOf="@id/wifi_iv"
-        android:text="@string/key_not_connected" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/cellular_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/key_not_connected"
+        app:defaultSrc="@drawable/cellular_no_connected"
+        app:defaultString="Bilinmiyor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/wifi_iv"
+        app:layout_constraintStart_toEndOf="@+id/status_wifi"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/cellular_no_connected" />
+        app:titleString="Mobil Veri Durumu" />
 
-    <TextView
-        android:id="@+id/cellular_status_tv"
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_cellular_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/cellular_iv"
-        app:layout_constraintStart_toStartOf="@+id/cellular_iv"
-        app:layout_constraintTop_toBottomOf="@id/wifi_iv"
-        android:text="@string/key_not_connected" />
+        app:defaultSrc="@drawable/ic_speed_unknown"
+        app:defaultString="Bilinmiyor"
+        app:layout_constraintEnd_toStartOf="@+id/status_cellular"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/status_wifi"
+        app:titleString="Mobil Veri Hızı" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/network_speed_iv"
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_sim_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/key_not_connected"
-        app:layout_constraintStart_toStartOf="@+id/wifi_iv"
-        app:layout_constraintTop_toBottomOf="@+id/wifi_status_tv"
-        android:src="@drawable/ic_speed_unknown" />
+        app:defaultSrc="@drawable/ic_no_sim"
+        app:defaultString="Takılı Değil"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/status_cellular_speed"
+        app:layout_constraintTop_toBottomOf="@+id/status_cellular"
+        app:titleString="SIM Card" />
 
-    <TextView
-        android:id="@+id/network_speed_status_tv"
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_battery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/network_speed_iv"
-        app:layout_constraintStart_toStartOf="@+id/network_speed_iv"
-        app:layout_constraintTop_toBottomOf="@+id/network_speed_iv"
-        android:text="@string/key_not_connected" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/sim_card_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/key_not_connected"
-        app:layout_constraintStart_toStartOf="@+id/cellular_iv"
-        app:layout_constraintTop_toTopOf="@+id/network_speed_iv"
-        android:src="@drawable/ic_no_sim" />
-
-    <TextView
-        android:id="@+id/sim_card_status_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/sim_card_iv"
-        app:layout_constraintStart_toStartOf="@+id/sim_card_iv"
-        app:layout_constraintTop_toBottomOf="@+id/sim_card_iv"
-        android:text="@string/key_not_connected" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/battery_iv"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/key_not_connected"
-        app:layout_constraintStart_toStartOf="@+id/network_speed_iv"
-        app:layout_constraintTop_toBottomOf="@+id/network_speed_status_tv"
-        android:src="@drawable/ic_not_battery" />
-
-    <TextView
-        android:id="@+id/battery_status_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/battery_iv"
-        app:layout_constraintStart_toStartOf="@+id/battery_iv"
-        app:layout_constraintTop_toBottomOf="@+id/battery_iv"
-        android:text="@string/key_not_charging" />
+        app:defaultSrc="@drawable/ic_not_battery"
+        app:defaultString="Takılı Değil"
+        app:layout_constraintEnd_toEndOf="@+id/status_cellular_speed"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/status_cellular_speed"
+        app:layout_constraintTop_toBottomOf="@+id/status_cellular_speed"
+        app:titleString="Batarya" />
 </androidx.constraintlayout.widget.ConstraintLayout>

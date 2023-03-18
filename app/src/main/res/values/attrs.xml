@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StatusChangeView">
+        <attr name="defaultSrc" format="reference"/>
+        <attr name="defaultString" format="string"/>
+        <attr name="titleString" format="string"/>
+    </declare-styleable>
+</resources>
