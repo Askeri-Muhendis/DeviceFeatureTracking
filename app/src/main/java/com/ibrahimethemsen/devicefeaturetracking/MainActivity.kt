@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.nfc.NfcAdapter
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -51,6 +52,18 @@ class MainActivity : AppCompatActivity() {
         observe()
         permission()
         setBatteryState()
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        if (nfcAdapter == null) {
+            // NFC özelliği desteklenmiyor
+            println("nfc desteklenmiyor")
+        } else {
+            if (!nfcAdapter.isEnabled) {
+                // NFC özelliği kapalı
+                println("nfc kapalı")
+            }else{
+                println("nfc açık")
+            }
+        }
     }
 
     private fun setBatteryState(){
