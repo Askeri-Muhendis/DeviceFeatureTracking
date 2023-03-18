@@ -1,6 +1,8 @@
 package com.ibrahimethemsen.devicefeaturetracking
 
 import android.Manifest
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -10,13 +12,19 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.ibrahimethemsen.devicefeaturetracking.battery.BatteryStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
+import com.ibrahimethemsen.devicefeaturetracking.model.CardState
+import com.ibrahimethemsen.devicefeaturetracking.model.MyState
 import com.ibrahimethemsen.devicefeaturetracking.model.PropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesStatusChanged
 import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
+import kotlinx.coroutines.launch
+
 //TODO WIFI-3G-SIM CARD-SARJ SOKETI-KULAKLIK-BLUETOOTH-NFC-TITRESIM-FLASH-HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
 class MainActivity : AppCompatActivity() {
     private val viewModel: NetworkStatusViewModel by lazy {
@@ -26,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     val networkStatusTracker = NetworkStatusTracker(this@MainActivity)
                     val simStatusTracker = SimCardStatusTracker(this@MainActivity)
+
                     return NetworkStatusViewModel(networkStatusTracker, simStatusTracker) as T
                 }
             },
@@ -42,8 +51,40 @@ class MainActivity : AppCompatActivity() {
         observe()
         permission()
 
+        val batteryStatusTracker = BatteryStatusTracker()
+        val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+
+        registerReceiver(batteryStatusTracker, filter)
+        viewModel.batteryStatusFlow(batteryStatusTracker)
+        setBatteryTrackerUiState()
     }
 
+    private fun setBatteryTrackerUiState(){
+        lifecycleScope.launch {
+            viewModel.batteryStatus.observe(this@MainActivity){ isCharging ->
+                // Şarj durumunu kullanarak yapılacak işlemler
+                if (isCharging){
+                    devicePropertiesStatusChanged(
+                        PropertiesUiState(
+                            binding.batteryIv,
+                            binding.batteryStatusTv,
+                            R.drawable.ic_battery,
+                            R.string.key_charging
+                        )
+                    )
+                }else{
+                    devicePropertiesStatusChanged(
+                        PropertiesUiState(
+                            binding.batteryIv,
+                            binding.batteryStatusTv,
+                            R.drawable.ic_not_battery,
+                            R.string.key_not_charging
+                        )
+                    )
+                }
+            }
+        }
+    }
 
     private fun permission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)

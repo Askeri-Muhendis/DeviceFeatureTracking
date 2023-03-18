@@ -15,4 +15,9 @@
     <!--Sim Card-->
     <string name="key_sim_inserted">Kart Takılı</string>
     <string name="key_sim_no_inserted">Kart Takılı Değil</string>
+
+    <!--Battery-->
+    <string name="key_charging">Şarj Oluyor</string>
+    <string name="key_not_charging">Şarj Olmuyor</string>
+
 </resources>
