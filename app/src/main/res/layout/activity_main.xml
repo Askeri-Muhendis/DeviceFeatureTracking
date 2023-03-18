@@ -71,5 +71,22 @@
         app:layout_constraintTop_toBottomOf="@+id/network_speed_iv"
         tools:text="@string/key_connected" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/sim_card_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/key_connected"
+        app:layout_constraintStart_toStartOf="@+id/cellular_iv"
+        app:layout_constraintTop_toTopOf="@+id/network_speed_iv"
+        tools:src="@drawable/ic_sim" />
 
+    <TextView
+        android:id="@+id/sim_card_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/sim_card_iv"
+        app:layout_constraintStart_toStartOf="@+id/sim_card_iv"
+        app:layout_constraintTop_toBottomOf="@+id/sim_card_iv"
+        tools:text="@string/key_connected" />
 </androidx.constraintlayout.widget.ConstraintLayout>

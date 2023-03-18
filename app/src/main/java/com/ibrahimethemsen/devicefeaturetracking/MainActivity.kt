@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
 import com.ibrahimethemsen.devicefeaturetracking.model.PropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
+import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesStatusChanged
 import com.ibrahimethemsen.devicefeaturetracking.utility.devicePropertiesUiState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
@@ -24,7 +25,8 @@ class MainActivity : AppCompatActivity() {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     val networkStatusTracker = NetworkStatusTracker(this@MainActivity)
-                    return NetworkStatusViewModel(networkStatusTracker) as T
+                    val simStatusTracker = SimCardStatusTracker(this@MainActivity)
+                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker) as T
                 }
             },
         )[NetworkStatusViewModel::class.java]
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         observe()
         permission()
+
     }
 
 
@@ -194,6 +197,34 @@ class MainActivity : AppCompatActivity() {
                         else -> {
                             userInfo("İzin verilmemiş")
                         }
+                    }
+                }
+            }
+        }
+        viewModel.simState.observe(this){
+            when(it){
+                CardState.Inserted -> {
+                    binding.apply {
+                        this@MainActivity.devicePropertiesStatusChanged(
+                            PropertiesUiState(
+                                simCardIv,
+                                simCardStatusTv,
+                                R.drawable.ic_sim,
+                                R.string.key_sim_inserted
+                            )
+                        )
+                    }
+                }
+                CardState.NotInserted -> {
+                    binding.apply {
+                        this@MainActivity.devicePropertiesStatusChanged(
+                            PropertiesUiState(
+                                simCardIv,
+                                simCardStatusTv,
+                                R.drawable.ic_no_sim,
+                                R.string.key_sim_no_inserted
+                            )
+                        )
                     }
                 }
             }

@@ -12,4 +12,7 @@
     <string name="key_four_g">4G</string>
     <string name="key_five_g">5G</string>
 
+    <!--Sim Card-->
+    <string name="key_sim_inserted">Kart Takılı</string>
+    <string name="key_sim_no_inserted">Kart Takılı Değil</string>
 </resources>
