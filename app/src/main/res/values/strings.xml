@@ -32,4 +32,6 @@
     <string name="key_ringer_mode_normal">Normal</string>
     <string name="key_ringer_mode_silent">Sessiz</string>
     <string name="key_ringer_mode_vibrate">Titreşimde</string>
+    <string name="key_proximity">Adı:%s\nMesafe:%d\nÜretici:%s </string>
+    <string name="key_proximity_title">Proximity</string>
 </resources>

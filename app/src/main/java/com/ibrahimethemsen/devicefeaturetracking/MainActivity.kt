@@ -1,9 +1,12 @@
 package com.ibrahimethemsen.devicefeaturetracking
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -20,7 +23,7 @@ import com.ibrahimethemsen.devicefeaturetracking.model.MyState
 import com.ibrahimethemsen.devicefeaturetracking.model.RingerModeState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 
-//TODO HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
+//TODO HOPORLOR-3RENK-ON KAMERA-ARKA KAMERA
 @RequiresApi(Build.VERSION_CODES.M)
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         observe()
         permission()
         setBatteryState()
+        setProximitySensor()
     }
 
     private fun setBatteryState(){
@@ -90,6 +94,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun setProximitySensor(){
+        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val sensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)
+        binding.statusProximityTv.text = getString(R.string.key_proximity,sensor.name,sensor.maximumRange.toInt(),sensor.vendor)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
