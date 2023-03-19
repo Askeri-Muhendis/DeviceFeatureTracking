@@ -66,7 +66,6 @@
         app:layout_constraintTop_toBottomOf="@+id/status_cellular_speed"
         app:titleString="Batarya" />
 
-
     <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
         android:id="@+id/status_headset"
         android:layout_width="wrap_content"
@@ -90,4 +89,16 @@
         app:layout_constraintStart_toStartOf="@+id/status_battery"
         app:layout_constraintTop_toBottomOf="@+id/status_battery"
         app:titleString="Bluetooth" />
+
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_torch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:defaultSrc="@drawable/ic_flashlight_off"
+        app:defaultString="Kapalı"
+        app:layout_constraintEnd_toEndOf="@+id/status_headset"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/status_headset"
+        app:layout_constraintTop_toBottomOf="@+id/status_battery"
+        app:titleString="Flaş" />
 </androidx.constraintlayout.widget.ConstraintLayout>

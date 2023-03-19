@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.nfc.NfcAdapter
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -23,20 +22,25 @@ import com.ibrahimethemsen.devicefeaturetracking.model.HeadsetState
 import com.ibrahimethemsen.devicefeaturetracking.model.MyState
 import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
+import com.ibrahimethemsen.devicefeaturetracking.torch.TorchTracker
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 
-//TODO WIFI-3G-SIM CARD-SARJ SOKETI-KULAKLIK-BLUETOOTH-NFC-TITRESIM-FLASH-HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
+//TODO NFC-TITRESIM-FLASH-HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
+@RequiresApi(Build.VERSION_CODES.M)
 class MainActivity : AppCompatActivity() {
+
     private val viewModel: NetworkStatusViewModel by lazy {
         ViewModelProvider(
             this,
             object : ViewModelProvider.Factory {
+                @RequiresApi(Build.VERSION_CODES.M)
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     val networkStatusTracker = NetworkStatusTracker(this@MainActivity)
                     val simStatusTracker = SimCardStatusTracker(this@MainActivity)
                     val headsetTracker = HeadsetTracker(this@MainActivity)
                     val bluetoothTracker = BluetoothTracker(this@MainActivity)
-                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker,headsetTracker,bluetoothTracker) as T
+                    val torchTracker = TorchTracker(this@MainActivity)
+                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker,headsetTracker,bluetoothTracker,torchTracker) as T
                 }
             },
         )[NetworkStatusViewModel::class.java]
@@ -52,18 +56,6 @@ class MainActivity : AppCompatActivity() {
         observe()
         permission()
         setBatteryState()
-        val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-        if (nfcAdapter == null) {
-            // NFC özelliği desteklenmiyor
-            println("nfc desteklenmiyor")
-        } else {
-            if (!nfcAdapter.isEnabled) {
-                // NFC özelliği kapalı
-                println("nfc kapalı")
-            }else{
-                println("nfc açık")
-            }
-        }
     }
 
     private fun setBatteryState(){
@@ -248,6 +240,12 @@ class MainActivity : AppCompatActivity() {
                 BluetoothState.Connected -> binding.statusBluetooth.propertiesStatusChangeView(R.drawable.ic_bluetooth_connected,R.string.key_bluetooth_connected)
                 BluetoothState.Disable -> binding.statusBluetooth.propertiesStatusChangeView(R.drawable.ic_bluetooth_disabled,R.string.key_bluetooth_disable)
                 BluetoothState.Enabled ->binding.statusBluetooth.propertiesStatusChangeView(R.drawable.ic_bluetooth,R.string.key_bluetooth_enable)
+            }
+        }
+        viewModel.torchStatus.observe(this){
+            when(it){
+                true -> binding.statusTorch.propertiesStatusChangeView(R.drawable.ic_flashlight_on,R.string.key_torch_on)
+                false -> binding.statusTorch.propertiesStatusChangeView(R.drawable.ic_flashlight_off,R.string.key_torch_off)
             }
         }
     }

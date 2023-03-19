@@ -14,15 +14,17 @@ import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.network.map
 import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.sim.simMap
+import com.ibrahimethemsen.devicefeaturetracking.torch.TorchTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
+@RequiresApi(Build.VERSION_CODES.M)
 class NetworkStatusViewModel(
     networkStatusTracker: NetworkStatusTracker,
     simStatusTracker : SimCardStatusTracker,
     private val headsetTracker: HeadsetTracker,
-    private val bluetoothTracker: BluetoothTracker
+    private val bluetoothTracker: BluetoothTracker,
+    private val torchTracker: TorchTracker
 ) : ViewModel(){
     @RequiresApi(Build.VERSION_CODES.N)
     val state = networkStatusTracker.networkStatus.map(
@@ -46,6 +48,9 @@ class NetworkStatusViewModel(
     private val _bluetoothStatus = MutableLiveData<BluetoothState>()
     val bluetoothStatus : LiveData<BluetoothState> = _bluetoothStatus
 
+    private val _torchStatus = MutableLiveData<Boolean>()
+    val torchStatus : LiveData<Boolean> = _torchStatus
+
     fun batteryStatusFlow(batteryStatusTracker: BatteryStatusTracker){
         viewModelScope.launch {
             batteryStatusTracker.isCharging.collect{
@@ -56,6 +61,7 @@ class NetworkStatusViewModel(
     init {
         headsetStatusFlow()
         bluetoothStatusFlow()
+        torchStatusFlow()
     }
     private fun headsetStatusFlow(){
         viewModelScope.launch {
@@ -72,4 +78,12 @@ class NetworkStatusViewModel(
         }
     }
 
+
+    private fun torchStatusFlow(){
+        viewModelScope.launch {
+            torchTracker.torchFlow().collect{
+                _torchStatus.postValue(it)
+            }
+        }
+    }
 }

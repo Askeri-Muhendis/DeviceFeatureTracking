@@ -27,4 +27,6 @@
     <string name="key_bluetooth_connected">Cihaza Bağlı</string>
     <string name="key_bluetooth_disable">Kapalı</string>
     <string name="key_bluetooth_enable">Açık</string>
+    <string name="key_torch_on">Açık</string>
+    <string name="key_torch_off">Kapalı</string>
 </resources>
