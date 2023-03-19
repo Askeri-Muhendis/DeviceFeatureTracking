@@ -1,6 +1,7 @@
 package com.ibrahimethemsen.devicefeaturetracking
 
 import android.Manifest
+import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -24,7 +25,7 @@ import com.ibrahimethemsen.devicefeaturetracking.model.RingerModeState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 
 //TODO HOPORLOR-3RENK-ON KAMERA-ARKA KAMERA
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: NetworkStatusViewModel by lazy {
@@ -33,7 +34,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -42,6 +42,27 @@ class MainActivity : AppCompatActivity() {
         permission()
         setBatteryState()
         setProximitySensor()
+        setModeObserve()
+
+    }
+
+
+    private fun setModeObserve(){
+        val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        when (uiModeManager.nightMode) {
+            UiModeManager.MODE_NIGHT_NO -> {
+                println("light")
+                // Normal tema
+            }
+            UiModeManager.MODE_NIGHT_YES -> {
+                // Koyu tema
+                println("dark")
+            }
+            UiModeManager.MODE_NIGHT_AUTO,UiModeManager.MODE_NIGHT_CUSTOM -> {
+                //gece modunu otomatik acma kapama
+                println("gece modu ayarlaması açık ")
+            }
+        }
     }
 
     private fun setBatteryState(){
@@ -102,7 +123,6 @@ class MainActivity : AppCompatActivity() {
         binding.statusProximityTv.text = getString(R.string.key_proximity,sensor.name,sensor.maximumRange.toInt(),sensor.vendor)
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     private fun observe() {
         viewModel.state.observe(this) { state ->
             when (state) {
