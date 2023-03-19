@@ -10,40 +10,22 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ibrahimethemsen.devicefeaturetracking.battery.BatteryStatusTracker
 import com.ibrahimethemsen.devicefeaturetracking.bluetooth.BluetoothState
-import com.ibrahimethemsen.devicefeaturetracking.bluetooth.BluetoothTracker
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
-import com.ibrahimethemsen.devicefeaturetracking.earphones.HeadsetTracker
 import com.ibrahimethemsen.devicefeaturetracking.model.CardState
 import com.ibrahimethemsen.devicefeaturetracking.model.HeadsetState
 import com.ibrahimethemsen.devicefeaturetracking.model.MyState
-import com.ibrahimethemsen.devicefeaturetracking.network.NetworkStatusTracker
-import com.ibrahimethemsen.devicefeaturetracking.sim.SimCardStatusTracker
-import com.ibrahimethemsen.devicefeaturetracking.torch.TorchTracker
+import com.ibrahimethemsen.devicefeaturetracking.model.RingerModeState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 
-//TODO NFC-TITRESIM-FLASH-HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
+//TODO HOPORLOR-3RENK-PROMIXIMTY-ON KAMERA-ARKA KAMERA
 @RequiresApi(Build.VERSION_CODES.M)
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: NetworkStatusViewModel by lazy {
-        ViewModelProvider(
-            this,
-            object : ViewModelProvider.Factory {
-                @RequiresApi(Build.VERSION_CODES.M)
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    val networkStatusTracker = NetworkStatusTracker(this@MainActivity)
-                    val simStatusTracker = SimCardStatusTracker(this@MainActivity)
-                    val headsetTracker = HeadsetTracker(this@MainActivity)
-                    val bluetoothTracker = BluetoothTracker(this@MainActivity)
-                    val torchTracker = TorchTracker(this@MainActivity)
-                    return NetworkStatusViewModel(networkStatusTracker, simStatusTracker,headsetTracker,bluetoothTracker,torchTracker) as T
-                }
-            },
-        )[NetworkStatusViewModel::class.java]
+        ViewModelProvider(this,MainViewModelProvider(this))[NetworkStatusViewModel::class.java]
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -246,6 +228,13 @@ class MainActivity : AppCompatActivity() {
             when(it){
                 true -> binding.statusTorch.propertiesStatusChangeView(R.drawable.ic_flashlight_on,R.string.key_torch_on)
                 false -> binding.statusTorch.propertiesStatusChangeView(R.drawable.ic_flashlight_off,R.string.key_torch_off)
+            }
+        }
+        viewModel.ringerModeStatus.observe(this){
+            when(it){
+                RingerModeState.Normal -> binding.statusRingerMode.propertiesStatusChangeView(R.drawable.ic_notifications,R.string.key_ringer_mode_normal)
+                RingerModeState.Silent -> binding.statusRingerMode.propertiesStatusChangeView(R.drawable.ic_notifications_silent,R.string.key_ringer_mode_silent)
+                RingerModeState.Vibrate ->binding.statusRingerMode.propertiesStatusChangeView(R.drawable.ic_notifications_vibrate,R.string.key_ringer_mode_vibrate)
             }
         }
     }

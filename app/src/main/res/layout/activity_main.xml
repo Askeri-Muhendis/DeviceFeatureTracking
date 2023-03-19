@@ -101,4 +101,16 @@
         app:layout_constraintStart_toStartOf="@+id/status_headset"
         app:layout_constraintTop_toBottomOf="@+id/status_battery"
         app:titleString="Flaş" />
+
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_ringer_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:defaultSrc="@drawable/ic_notifications"
+        app:defaultString="Normal"
+        app:layout_constraintEnd_toEndOf="@+id/status_battery"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/status_battery"
+        app:layout_constraintTop_toBottomOf="@+id/status_bluetooth"
+        app:titleString="Ses Titreşim" />
 </androidx.constraintlayout.widget.ConstraintLayout>

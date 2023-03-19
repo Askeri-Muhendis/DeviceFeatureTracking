@@ -29,4 +29,7 @@
     <string name="key_bluetooth_enable">Açık</string>
     <string name="key_torch_on">Açık</string>
     <string name="key_torch_off">Kapalı</string>
+    <string name="key_ringer_mode_normal">Normal</string>
+    <string name="key_ringer_mode_silent">Sessiz</string>
+    <string name="key_ringer_mode_vibrate">Titreşimde</string>
 </resources>
