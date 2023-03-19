@@ -34,4 +34,8 @@
     <string name="key_ringer_mode_vibrate">Titreşimde</string>
     <string name="key_proximity">Adı:%s\nMesafe:%d\nÜretici:%s </string>
     <string name="key_proximity_title">Proximity</string>
+    <string name="key_back_camera_cd">Arka Kamera</string>
+    <string name="key_light_mode">Light Mode</string>
+    <string name="key_dark_mode">Dark Mode</string>
+    <string name="key_dark_auto_mode">Dark Auto</string>
 </resources>

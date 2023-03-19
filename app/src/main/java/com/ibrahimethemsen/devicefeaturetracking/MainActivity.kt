@@ -2,6 +2,7 @@ package com.ibrahimethemsen.devicefeaturetracking
 
 import android.Manifest
 import android.app.UiModeManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -10,6 +11,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -24,14 +26,13 @@ import com.ibrahimethemsen.devicefeaturetracking.model.MyState
 import com.ibrahimethemsen.devicefeaturetracking.model.RingerModeState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 
-//TODO HOPORLOR-3RENK-ON KAMERA-ARKA KAMERA
+//TODO HOPORLOR-3RENK
 @RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: NetworkStatusViewModel by lazy {
         ViewModelProvider(this,MainViewModelProvider(this))[NetworkStatusViewModel::class.java]
     }
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,24 +44,35 @@ class MainActivity : AppCompatActivity() {
         setBatteryState()
         setProximitySensor()
         setModeObserve()
-
+        setCamera()
     }
 
+    private fun setCamera(){
+        binding.statusBackCamera.setOnClickListener {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            try {
+                startActivityForResult(takePictureIntent, 1)
+            } catch (e: ActivityNotFoundException) {
+                println("camera hata ${e.localizedMessage}")
+            }
+        }
+    }
 
     private fun setModeObserve(){
         val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         when (uiModeManager.nightMode) {
             UiModeManager.MODE_NIGHT_NO -> {
-                println("light")
                 // Normal tema
+                binding.statusTheme.propertiesStatusChangeView(R.drawable.ic_light_mode,R.string.key_light_mode)
             }
+
             UiModeManager.MODE_NIGHT_YES -> {
                 // Koyu tema
-                println("dark")
+                binding.statusTheme.propertiesStatusChangeView(R.drawable.ic_dark_mode,R.string.key_dark_mode)
             }
             UiModeManager.MODE_NIGHT_AUTO,UiModeManager.MODE_NIGHT_CUSTOM -> {
                 //gece modunu otomatik acma kapama
-                println("gece modu ayarlaması açık ")
+                binding.statusTheme.propertiesStatusChangeView(R.drawable.ic_night_sight_auto,R.string.key_dark_auto_mode)
             }
         }
     }
@@ -73,24 +85,16 @@ class MainActivity : AppCompatActivity() {
     }
     private fun permission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(Manifest.permission.READ_PHONE_STATE),
+                arrayOf(Manifest.permission.READ_PHONE_STATE,Manifest.permission.BLUETOOTH,Manifest.permission.CAMERA),
                 1
             )
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.READ_PHONE_STATE),
-                2
-            )
-        }
-
     }
 
     override fun onRequestPermissionsResult(
@@ -102,13 +106,6 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             1 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    userInfo("İzin Verildi")
-                } else {
-                    userInfo("İzin Yok")
-                }
-            }
-            2 -> {
-                if (grantResults.isNotEmpty() && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     userInfo("İzin Verildi")
                 } else {
                     userInfo("İzin Yok")

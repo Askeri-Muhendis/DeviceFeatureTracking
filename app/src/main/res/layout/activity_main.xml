@@ -131,4 +131,27 @@
         app:layout_constraintEnd_toEndOf="@+id/status_torch"
         app:layout_constraintStart_toStartOf="@+id/status_torch"
         app:layout_constraintTop_toBottomOf="@+id/status_proximity" />
+
+    <ImageButton
+        android:id="@+id/status_back_camera"
+        android:layout_width="wrap_content"
+        android:contentDescription="@string/key_back_camera_cd"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_camera"
+        app:layout_constraintEnd_toEndOf="@+id/status_ringer_mode"
+        app:layout_constraintStart_toStartOf="@+id/status_ringer_mode"
+        app:layout_constraintTop_toBottomOf="@+id/status_ringer_mode" />
+
+    <com.ibrahimethemsen.devicefeaturetracking.component.StatusChangeView
+        android:id="@+id/status_theme"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:defaultSrc="@drawable/ic_light_mode"
+        app:defaultString="Light"
+        app:layout_constraintEnd_toEndOf="@+id/status_proximity_tv"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/status_proximity_tv"
+        app:layout_constraintTop_toBottomOf="@+id/status_proximity_tv"
+        app:titleString="Tema" />
 </androidx.constraintlayout.widget.ConstraintLayout>
