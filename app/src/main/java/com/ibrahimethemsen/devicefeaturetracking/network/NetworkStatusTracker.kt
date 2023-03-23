@@ -12,19 +12,18 @@ import android.telephony.TelephonyManager
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.ibrahimethemsen.devicefeaturetracking.R
+import com.ibrahimethemsen.devicefeaturetracking.model.NetworkState
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.map
 
 
-class NetworkStatusTracker(context: Context) {
+class NetworkStatusTracker(private val context: Context) {
 
     //System Service
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     @RequiresApi(Build.VERSION_CODES.N)
-    val networkStatus = callbackFlow {
+    fun networkStatus() = callbackFlow {
         //Network Callback
         val networkStatusCallback = object : ConnectivityManager.NetworkCallback() {
             @RequiresApi(Build.VERSION_CODES.N)
@@ -34,20 +33,20 @@ class NetworkStatusTracker(context: Context) {
             ) {
                 super.onCapabilitiesChanged(network, networkCapabilities)
                 if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                    trySend(NetworkStatus.CellularConnected)
+                    trySend(NetworkState.Cellular)
                     println("mobil veri ")
-                    trySend(NetworkStatus.NetworkSpeed(getNetworkClass(context)))
+                    trySend(NetworkState.NetworkSpeed(getNetworkClass(context)))
                 }
                 if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                     println("wifi")
-                    trySend(NetworkStatus.WifiConnected)
+                    trySend(NetworkState.Wifi)
                 }
 
             }
 
             override fun onLost(network: Network) {
                 println("onLost")
-                trySend(NetworkStatus.Unavailable)
+                trySend(NetworkState.Error)
             }
         }
 
@@ -100,20 +99,5 @@ class NetworkStatusTracker(context: Context) {
             println("izin yok status ")
             "izin yok status"
         }
-    }
-}
-
-
-inline fun <Result> Flow<NetworkStatus>.map(
-    crossinline onUnavailable: suspend () -> Result,
-    crossinline onWifi: suspend () -> Result,
-    crossinline onCellular: suspend () -> Result,
-    crossinline onNetworkSpeed: suspend (String) -> Result
-): Flow<Result> = map { status ->
-    when (status) {
-        NetworkStatus.Unavailable -> onUnavailable()
-        NetworkStatus.CellularConnected -> onCellular()
-        NetworkStatus.WifiConnected -> onWifi()
-        is NetworkStatus.NetworkSpeed -> onNetworkSpeed(status.data)
     }
 }

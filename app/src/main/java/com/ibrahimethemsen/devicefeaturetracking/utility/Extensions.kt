@@ -9,16 +9,6 @@ fun Context.userInfo(msg : String){
     Toast.makeText(this,msg,Toast.LENGTH_SHORT).show()
 }
 
-fun Context.devicePropertiesUiState(
-    vararg properties : PropertiesUiState,
-) {
-    properties.forEach {
-        devicePropertiesStatusChanged(
-            it
-        )
-    }
-}
-
 fun Context.devicePropertiesStatusChanged(
     propertiesUiState: PropertiesUiState
 ) {

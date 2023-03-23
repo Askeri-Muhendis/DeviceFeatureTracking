@@ -22,7 +22,7 @@ import com.ibrahimethemsen.devicefeaturetracking.bluetooth.BluetoothState
 import com.ibrahimethemsen.devicefeaturetracking.databinding.ActivityMainBinding
 import com.ibrahimethemsen.devicefeaturetracking.model.CardState
 import com.ibrahimethemsen.devicefeaturetracking.model.HeadsetState
-import com.ibrahimethemsen.devicefeaturetracking.model.MyState
+import com.ibrahimethemsen.devicefeaturetracking.model.NetworkState
 import com.ibrahimethemsen.devicefeaturetracking.model.RingerModeState
 import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 
@@ -30,9 +30,10 @@ import com.ibrahimethemsen.devicefeaturetracking.utility.userInfo
 @RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: NetworkStatusViewModel by lazy {
-        ViewModelProvider(this,MainViewModelProvider(this))[NetworkStatusViewModel::class.java]
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this,MainViewModelProvider(this))[MainViewModel::class.java]
     }
+
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         setProximitySensor()
         setModeObserve()
         setCamera()
+
     }
 
     private fun setCamera(){
@@ -81,7 +83,6 @@ class MainActivity : AppCompatActivity() {
         val batteryStatusTracker = BatteryStatusTracker()
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         registerReceiver(batteryStatusTracker, filter)
-        viewModel.batteryStatusFlow(batteryStatusTracker)
     }
     private fun permission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     private fun observe() {
         viewModel.state.observe(this) { state ->
             when (state) {
-                MyState.Error -> {
+                NetworkState.Error -> {
                     binding.apply {
                         statusCellularSpeed.propertiesStatusChangeView(
                             R.drawable.ic_speed_unknown,
@@ -139,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 }
-                MyState.Cellular -> {
+                NetworkState.Cellular -> {
                     binding.apply {
                         statusCellular.propertiesStatusChangeView(
                             R.drawable.cellular_connected,
@@ -151,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 }
-                MyState.Wifi -> {
+                NetworkState.Wifi -> {
                     binding.apply {
                         statusCellularSpeed.propertiesStatusChangeView(
                             R.drawable.ic_speed_unknown,
@@ -167,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
                 }
-                is MyState.NetworkSpeed -> {
+                is NetworkState.NetworkSpeed -> {
                     when (state.data) {
                         "2G", "?" -> {
                             binding.statusCellularSpeed.propertiesStatusChangeView(
