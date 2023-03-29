@@ -1,6 +1,4 @@
 
-Ñ
-Tapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/network/NetworkStatus.kt,c\5\c50cb2c504cdc1658fee4f382f157a4478145792
 â
 Yapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/bluetooth/BluetoothTracker.kt,5\7\5739960f009a2264317687c616a7256896b7c56e
 â
@@ -11,15 +9,13 @@ Wapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/earphones/HeadsetTr
 [app/src/main/java/com/ibrahimethemsen/devicefeaturetracking/ringermode/RingerModeTracker.kt,6\0\6029d3c0a9fe2762630c1defb2ae425d72519601
 }
 Mapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/nfc/NfcTracker.kt,1\d\1d49b120ac78fc88a5032fa1696047ca59fce7fb
-{
-Kapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/MainActivity.kt,8\2\8239e9d112a359e89c8dcda9485feb9ec22e1397
 Å
 Qapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/utility/Extensions.kt,a\e\ae522815283c6c0b40b42ddce506dc01a51f758e
-|
-Lapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/sim/SimStatus.kt,3\e\3e89e4531ae3d303b4fcf97ef68f5be9f65fc8c5
 á
 Wapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/sim/SimCardStatusTracker.kt,8\f\8fe3b9f8165df19284f24910038adc087fbdec84
 Å
 Qapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/model/HeadsetState.kt,7\b\7b0551af2698d486c689598c15dd73bee1885026
 ~
 Napp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/model/CardState.kt,4\1\41a02c6defb1b7b81853e11c7492a6bf59d52932
+{
+Kapp/src/main/java/com/ibrahimethemsen/devicefeaturetracking/MainActivity.kt,8\2\8239e9d112a359e89c8dcda9485feb9ec22e1397

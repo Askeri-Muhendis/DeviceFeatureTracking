@@ -1,4 +1,5 @@
 
-Okotlin:S1135"2Complete the task associated to this TODO comment.(Ù½ä¤ÿÿÿÿÿ
-@kotlin:S18747"#Deprecated code should not be used.(ûòÿúÿÿÿÿ
-jkotlin:S3776|"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(ãÍÍè
+Okotlin:S1135&"2Complete the task associated to this TODO comment.(Ù½ä¤ÿÿÿÿÿ
+Gkotlin:S1874C"#Deprecated code should not be used.(ûòÿúÿÿÿÿ8ÈÔ¶Ñò0
+Hkotlin:S1874¡"#Deprecated code should not be used.(øøõØÿÿÿÿÿ8ÉÔ¶Ñò0
+~kotlin:S1186N"ZAdd a nested comment explaining why this function is empty or complete the implementation.(âäõåûÿÿÿÿ8ïÔ¶Ñò0

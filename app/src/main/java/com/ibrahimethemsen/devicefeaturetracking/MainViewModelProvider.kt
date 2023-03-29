@@ -22,7 +22,7 @@ class MainViewModelProvider(private val context : Context) : ViewModelProvider.F
             val bluetoothTracker = BluetoothTracker(context)
             val torchTracker = TorchTracker(context)
             val ringerMode = RingerModeTracker(context)
-            val batteryStatusTracker = BatteryStatusTracker()
+            val batteryStatusTracker = BatteryStatusTracker(context)
             return MainViewModel(networkStatusTracker, simStatusTracker,headsetTracker,bluetoothTracker,torchTracker,ringerMode,batteryStatusTracker) as T
         }
 }

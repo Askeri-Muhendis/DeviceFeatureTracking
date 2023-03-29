@@ -3,29 +3,32 @@ package com.ibrahimethemsen.devicefeaturetracking.battery
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.BatteryManager
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 
-class BatteryStatusTracker : BroadcastReceiver() {
-    private val _isCharging = MutableStateFlow(false)
-
-    val isCharging: Flow<Boolean>
-        get() = _isCharging
-
-    override fun onReceive(context: Context?, intent: Intent?) {
-        when (intent?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)) {
-            BatteryManager.BATTERY_STATUS_CHARGING -> {
-                _isCharging.value = true
-            }
-            BatteryManager.BATTERY_STATUS_FULL -> {
-                _isCharging.value = false
-
-            }
-            else -> {
-                _isCharging.value = false
-
+class BatteryStatusTracker(private val context : Context){
+    fun observeBattery(): Flow<Boolean> = callbackFlow {
+        val batteryReceiver = object : BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                when (intent?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)) {
+                    BatteryManager.BATTERY_STATUS_CHARGING -> {
+                       trySend(true)
+                    }
+                    BatteryManager.BATTERY_STATUS_FULL -> {
+                        trySend(false)
+                    }
+                    else -> {
+                        trySend(false)
+                    }
+                }
             }
         }
+        val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        context.registerReceiver(batteryReceiver, filter)
+
+        awaitClose{context.unregisterReceiver(batteryReceiver)}
     }
 }

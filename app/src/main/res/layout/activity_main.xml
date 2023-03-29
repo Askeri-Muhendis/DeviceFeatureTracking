@@ -154,4 +154,6 @@
         app:layout_constraintStart_toStartOf="@+id/status_proximity_tv"
         app:layout_constraintTop_toBottomOf="@+id/status_proximity_tv"
         app:titleString="Tema" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,7 @@ class StatusChangeView @JvmOverloads constructor(
     private var defaultSrc = 0
     private var defaultString = "0"
     private var titleString = "0"
+    private var onStatusChangeListener: OnStatusChangeListener? = null
     init {
         addView(binding.root)
         context.withStyledAttributes(attrs, R.styleable.StatusChangeView){
@@ -53,6 +54,13 @@ class StatusChangeView @JvmOverloads constructor(
                     statusStringRes
                 )
             )
+        }
+    }
+
+    fun setOnStatusChangeListener(listener : OnStatusChangeListener){
+        onStatusChangeListener = listener
+        setOnClickListener {
+            onStatusChangeListener?.onStatusChange()
         }
     }
 }

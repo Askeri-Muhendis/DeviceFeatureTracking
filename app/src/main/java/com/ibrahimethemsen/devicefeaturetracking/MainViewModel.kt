@@ -67,7 +67,7 @@ class MainViewModel(
     }
 
     private fun batteryStatusFlow() {
-        batteryStatusTracker.isCharging.flowToLiveData(_batteryStatus)
+        batteryStatusTracker.observeBattery().flowToLiveData(_batteryStatus)
     }
     private fun headsetStatusFlow(){
         headsetTracker.observeHeadsetConnection().flowToLiveData(_headsetStatus)
