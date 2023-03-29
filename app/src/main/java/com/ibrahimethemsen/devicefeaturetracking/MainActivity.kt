@@ -1,7 +1,6 @@
 package com.ibrahimethemsen.devicefeaturetracking
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.UiModeManager
 import android.content.ActivityNotFoundException
@@ -45,6 +44,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var setTorch by Delegates.notNull<Boolean>()
+    private var setTheme by Delegates.notNull<Boolean>()
+
     private lateinit var popupMenu : PopupMenu
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,14 +74,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun setModeObserve() {
         val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        binding.statusTheme.setOnStatusChangeListener(object : OnStatusChangeListener{
-            @SuppressLint("WrongConstant")
-            override fun onStatusChange() {
 
+        binding.statusTheme.setOnStatusChangeListener(object : OnStatusChangeListener{
+            override fun onStatusChange() {
+                if (setTheme){
+                    //karanlık temadan çık
+                    uiModeManager.nightMode = UiModeManager.MODE_NIGHT_NO
+                    setTheme = false
+                }else{
+                    //karanlık tema var
+                    uiModeManager.nightMode = UiModeManager.MODE_NIGHT_YES
+                    setTheme = true
+                }
             }
         })
         when (uiModeManager.nightMode) {
             UiModeManager.MODE_NIGHT_NO -> {
+                setTheme = false
                 // Normal tema
                 binding.statusTheme.propertiesStatusChangeView(
                     R.drawable.ic_light_mode,
@@ -89,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             UiModeManager.MODE_NIGHT_YES -> {
+                setTheme = true
                 // Koyu tema
                 binding.statusTheme.propertiesStatusChangeView(
                     R.drawable.ic_dark_mode,
